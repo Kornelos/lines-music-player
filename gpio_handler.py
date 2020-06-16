@@ -29,7 +29,7 @@ class MonitorTask:
     def run(self, button, name):
         self.running = True
         while True:
-            ev_line = button.event_wait(sec=2)
+            ev_line = button.event_wait(2)
             if ev_line:
                 event = button.event_read()
                 if event.type == gpiod.line_event.RISING_EDGE:
@@ -37,7 +37,7 @@ class MonitorTask:
                     try:
                         # clear event queue
                         requests.post(url=URL + '/'+name+'/')
-                        while button.event_wait(sec=1):
+                        while button.event_wait(1):
                             button.event_read()    
                     except:
                         pass
@@ -104,6 +104,7 @@ class GpioHandler:
     def start_monitors(self):
         
         t1 = Thread(target=self.prevTask.run,args=(self.prev_button,'prev'))
+        self.prev_button.event_wait(2)
         t1.start()
         
         t2 = Thread(target=self.nextTask.run,args=(self.next_button,'next'))

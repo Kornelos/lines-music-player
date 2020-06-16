@@ -26,10 +26,11 @@ opkg install screen
 opkg install curl
 
 #pip
-# pip3 install gpiod
+pip3 install gpiod
 pip3 install python-mpd2
+pip3 install requests
 
 # set high mpd timeout to prevent client disconnecting
-
 echo 'connection_timeout    "2000000"' >> /etc/mpd.conf
+#resest
 /etc/init.d/mpd restart
