@@ -33,7 +33,7 @@ class MonitorTask:
             ev_line = button.event_wait(timedelta(seconds=2))
             if ev_line:
                 event = button.event_read()
-                if event.type == gpiod.line_event.RISING_EDGE:
+                if event.event_type == gpiod.line_event.RISING_EDGE:
                     print("Clicked "+name+" on GPIO")
                     try:
                         # clear event queue
