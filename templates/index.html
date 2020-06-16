@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Music Player LINES</title>
+  <style>
+    #feedback { font-size: 1.4em; }
+    #selectable .ui-selecting { background: #FECA40; }
+    #selectable .ui-selected { background: #F39814; color: white; }
+    #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+    #selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    $( function() {
+      $( "#selectable" ).selectable();
+    } );
+    </script>
+</head>
+<body>
+<h3>MP3 Player</h3>
+<form action="/prev/" method="post" style="float: left">
+    <button name="prevBtn" type="submit">Previous Song</button>
+</form>
+<form action="/stop/" method="post" style="float: left">
+    <button name="stopBtn" type="submit">Pause/Unpause</button>
+</form>
+<form action="/next/" method="post" style="float: left">
+    <button name="nextBtn" type="submit">Next Song</button>
+</form>
+<br>
+<h4>Song list:</h4>
+<ol id="selectable">
+    {% for elem in song_list %}
+        <li>{{elem}}</li>
+    {% endfor %}
+</ol>
+<br>
+<form action="/upload/" method="post" enctype = "multipart/form-data">
+    <input type="file" id="file" name="file">
+    <button name="uploadBtn" type="submit">Upload Song</button>
+</form>
+<br>
+<button id="download" download>Download Selected Song</button do>
+<br>
+{{ ret_msg }}
+
+<script>
+// download song script
+$("#download").on("click", function(){
+
+// Data to post
+data = {
+    filename: $("#selectable > li.ui-selectee.ui-selected").text()
+};
+
+// Use XMLHttpRequest instead of Jquery $ajax
+xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    var a;
+    if (xhttp.readyState === 4 && xhttp.status === 200) {
+        // Trick for making downloadable link
+        a = document.createElement('a');
+        a.href = window.URL.createObjectURL(xhttp.response);
+        // Give filename you wish to download
+        a.download = $("#selectable > li.ui-selectee.ui-selected").text();
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+    }
+};
+// Post data to URL which handles post request
+xhttp.open("POST", "/download/");
+xhttp.setRequestHeader("Content-Type", "application/json");
+// You should set responseType as blob for binary responses
+xhttp.responseType = 'blob';
+xhttp.send(JSON.stringify(data));
+});
+
+</script>
+</body>
+</html>
