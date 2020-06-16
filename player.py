@@ -1,11 +1,11 @@
 # from pygame import mixer
 from os import listdir
-#from gpio_handler import GpioHandler, BlinkTask
+from gpio_handler import GpioHandler, BlinkTask
 from mpd import MPDClient
 SONGS_URL = 'http://0.0.0.0:8000/'
 SONGS_DIR = 'songs/'
 class MusicPlayer:
-    #gpio = GpioHandler()
+    gpio = GpioHandler()
     current_song = ""
     songs = []
     paused = True
@@ -13,7 +13,7 @@ class MusicPlayer:
         # mixer.init()
         self.mpc = MPDClient()
         self.mpc.connect("localhost",6600)
-        #self.gpio.start_monitors()
+        self.gpio.start_monitors()
 
     # load song list from filesystem
     def get_songs(self):
@@ -63,18 +63,18 @@ class MusicPlayer:
         # mixer.music.play()
         self.mpc.play()
         self.paused = False
-        #self.gpio.start_blink()
+        self.gpio.start_blink()
         
 
     def pause(self):
         if self.paused:
             self.mpc.pause()
             self.paused = False
-           # self.gpio.start_blink()
+            self.gpio.start_blink()
         else:
             # mixer.music.pause()
             self.mpc.pause()
             self.paused = True
-           # self.gpio.stop_blink()
+            self.gpio.stop_blink()
 
 

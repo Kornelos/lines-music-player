@@ -32,7 +32,7 @@ class MonitorTask:
             ev_line = button.event_wait(sec=2)
             if ev_line:
                 event = button.event_read()
-                if event.type == gpiod.LineEvent.RISING_EDGE:
+                if event.type == gpiod.line_event.RISING_EDGE:
                     print("Clicked "+name+" on GPIO")
                     try:
                         # clear event queue
@@ -53,25 +53,43 @@ class GpioHandler:
     is_blinking = False
 
     def __init__(self):
-        self.chip = gpiod.Chip('10008000.gpio')
+        self.chip = gpiod.chip('9008000.gpio')
         # configure necessary lines
         self.led = self.chip.get_line(24)
-        self.led.request(consumer="Blink",type=gpiod.LINE_REQ_DIR_OUT)
+        config = gpiod.line_request()
+        config.consumer = "Blink"
+        config.request_type = gpiod.line_request.DIRECTION_OUTPUT
+        self.led.request(config)
 
         self.prev_button = self.chip.get_line(12)
-        self.prev_button.request(consumer="Prev",type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        config = gpiod.line_request()
+        config.consumer = "Prev"
+        config.request_type = gpiod.line_request.EVENT_BOTH_EDGES
+        self.prev_button.request(config)
 
         self.stop_button = self.chip.get_line(13)
-        self.stop_button.request(consumer="Stop",type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        config = gpiod.line_request()
+        config.consumer = "Stop"
+        config.request_type = gpiod.line_request.EVENT_BOTH_EDGES
+        self.stop_button.request(config)
 
         self.next_button = self.chip.get_line(14)
-        self.next_button.request(consumer="Next",type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        config = gpiod.line_request()
+        config.consumer = "Next"
+        config.request_type = gpiod.line_request.EVENT_BOTH_EDGES
+        self.next_button.request(config)
 
         self.vol_up_button = self.chip.get_line(22)
-        self.vol_up_button.request(consumer="Stop",type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        config = gpiod.line_request()
+        config.consumer = "Prev"
+        config.request_type = gpiod.line_request.EVENT_BOTH_EDGES
+        self.vol_up_button.request(config)
 
         self.vol_down_button = self.chip.get_line(23)
-        self.vol_down_button.request(consumer="Next",type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        config = gpiod.line_request()
+        config.consumer = "Next"
+        config.request_type = gpiod.line_request.EVENT_BOTH_EDGES
+        self.vol_down_button.request(config)
 
     def start_blink(self):
         if not self.is_blinking:
