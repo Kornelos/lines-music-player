@@ -23,3 +23,11 @@ opkg install mpc
 
 #utils
 opkg install screen
+
+#pip
+pip3 install gpiod
+pip3 install python-mpd2
+
+# set high mpd timeout to prevent client disconnecting
+
+echo 'connection_timeout    "2000000"' >> /etc/mpd.conf 
