@@ -1,7 +1,8 @@
 import gpiod
 import time
 import requests
-from threading import Thread 
+from threading import Thread
+from datetime import timedelta
 import asyncio
 from time import sleep
 URL = 'http://127.0.0.1:8810' 
@@ -29,7 +30,7 @@ class MonitorTask:
     def run(self, button, name):
         self.running = True
         while True:
-            ev_line = button.event_wait(2)
+            ev_line = button.event_wait(timedelta(seconds=2))
             if ev_line:
                 event = button.event_read()
                 if event.type == gpiod.line_event.RISING_EDGE:
@@ -37,7 +38,7 @@ class MonitorTask:
                     try:
                         # clear event queue
                         requests.post(url=URL + '/'+name+'/')
-                        while button.event_wait(1):
+                        while button.event_wait(timedelta(seconds=1)):
                             button.event_read()    
                     except:
                         pass
@@ -104,7 +105,6 @@ class GpioHandler:
     def start_monitors(self):
         
         t1 = Thread(target=self.prevTask.run,args=(self.prev_button,'prev'))
-        self.prev_button.event_wait(2)
         t1.start()
         
         t2 = Thread(target=self.nextTask.run,args=(self.next_button,'next'))
