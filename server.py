@@ -7,6 +7,7 @@ from flask import send_file
 #from gpio_handler import GpioHandler
 from subprocess import call
 import signal
+from sys import exit
 # creates a Flask application, named app
 app = Flask(__name__)
 player = MusicPlayer()
@@ -14,6 +15,7 @@ player = MusicPlayer()
 def signal_handler(sig, frame):
     print("Stopping..")
     player.stop()
+    exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 
