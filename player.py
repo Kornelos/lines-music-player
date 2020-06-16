@@ -76,5 +76,9 @@ class MusicPlayer:
             self.mpc.pause()
             self.paused = True
             self.gpio.stop_blink()
+    
+    def stop(self):
+        self.mpc.clear()
+        self.mpc.stop()
 
 

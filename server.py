@@ -6,11 +6,16 @@ from werkzeug.utils import secure_filename
 from flask import send_file
 #from gpio_handler import GpioHandler
 from subprocess import call
-
+import signal
 # creates a Flask application, named app
 app = Flask(__name__)
 player = MusicPlayer()
 
+def signal_handler(sig, frame):
+    print("Stopping..")
+    player.stop()
+
+signal.signal(signal.SIGINT, signal_handler)
 
 @app.route("/")
 def index(msg='Click next/prev to start playing'):
